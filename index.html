@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIPE — Sistema de Préstamo de Equipos | UAS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="src/styles/main.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-mark">
+          <span class="logo-icon">⬡</span>
+          <div>
+            <div class="logo-title">SIPE</div>
+            <div class="logo-sub">UAS · Ing. Mochis</div>
+          </div>
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggle" title="Colapsar menú">‹</button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">General</div>
+        <a href="#" class="nav-item active" data-page="dashboard">
+          <span class="nav-icon">◈</span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+
+        <div class="nav-section-label">Catálogos</div>
+        <a href="#" class="nav-item" data-page="unidades">
+          <span class="nav-icon">⬡</span>
+          <span class="nav-label">Unidades Académicas</span>
+        </a>
+        <a href="#" class="nav-item" data-page="carreras">
+          <span class="nav-icon">◎</span>
+          <span class="nav-label">Carreras</span>
+        </a>
+        <a href="#" class="nav-item" data-page="usuarios">
+          <span class="nav-icon">◉</span>
+          <span class="nav-label">Usuarios</span>
+        </a>
+        <a href="#" class="nav-item" data-page="equipos">
+          <span class="nav-icon">▣</span>
+          <span class="nav-label">Equipos</span>
+        </a>
+
+        <div class="nav-section-label">Operaciones</div>
+        <a href="#" class="nav-item" data-page="prestamos">
+          <span class="nav-icon">⇄</span>
+          <span class="nav-label">Préstamos</span>
+        </a>
+        <a href="#" class="nav-item" data-page="reportes">
+          <span class="nav-icon">≋</span>
+          <span class="nav-label">Reportes</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="semester-badge">Semestre 2025-A</div>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content" id="mainContent">
+      <div id="page-container"></div>
+    </main>
+  </div>
+
+  <!-- Modal overlay -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Título</h2>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Scripts -->
+  <script src="src/data/db.js"></script>
+  <script src="src/pages/dashboard.js"></script>
+  <script src="src/pages/unidades.js"></script>
+  <script src="src/pages/carreras.js"></script>
+  <script src="src/pages/usuarios.js"></script>
+  <script src="src/pages/equipos.js"></script>
+  <script src="src/pages/prestamos.js"></script>
+  <script src="src/pages/reportes.js"></script>
+  <script src="src/app.js"></script>
+</body>
+</html>
