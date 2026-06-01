@@ -7,10 +7,20 @@
     "start": "live-server --port=3000 --open=index.html",
     "dev": "npx live-server --port=3000"
   },
-  "keywords": ["prestamos", "uas", "equipos", "ingenieria"],
+  "keywords": [
+    "prestamos",
+    "uas",
+    "equipos",
+    "ingenieria"
+  ],
   "author": "Estudiante UAS",
   "license": "MIT",
   "devDependencies": {
     "live-server": "^1.2.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "pg": "^8.21.0"
   }
 }

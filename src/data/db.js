@@ -6,13 +6,14 @@ const defaultData = {
     { id: 1, nombre: 'Facultad de Ingeniería Mochis', siglas: 'FIM', ciudad: 'Los Mochis', activa: true },
     { id: 2, nombre: 'Facultad de Enfermería Mochis', siglas: 'FEM', ciudad: 'Los Mochis', activa: true },
     { id: 3, nombre: 'Facultad de Ciencias Económicas', siglas: 'FCE', ciudad: 'Los Mochis', activa: true },
+    { id: 4, nombre: 'Facultad de Medicina', siglas: 'FMM', ciudad: 'Los Mochis', activa: true },
   ],
   carreras: [
     { id: 1, nombre: 'Ingeniería Civil', clave: 'IC', unidadId: 1, activa: true },
     { id: 2, nombre: 'Ingeniería Geodésica', clave: 'IG', unidadId: 1, activa: true },
     { id: 3, nombre: 'Ingeniería de Software', clave: 'IS', unidadId: 1, activa: true },
     { id: 4, nombre: 'Ingeniería En Procesos Industriales', clave: 'IPI', unidadId: 1, activa: true },
-    { id: 5, nombre: 'Enfermería General', clave: 'FEM', unidadId: 2, activa: true },
+    { id: 5, nombre: 'Enfermería', clave: 'FEM', unidadId: 2, activa: true },
     { id: 6, nombre: 'Medicina General', clave: 'FMM', unidadId: 3, activa: true },
   ],
   usuarios: [
