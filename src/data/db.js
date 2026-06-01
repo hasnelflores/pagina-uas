@@ -11,14 +11,18 @@ const defaultData = {
     { id: 1, nombre: 'Ingeniería Civil', clave: 'IC', unidadId: 1, activa: true },
     { id: 2, nombre: 'Ingeniería Geodésica', clave: 'IG', unidadId: 1, activa: true },
     { id: 3, nombre: 'Ingeniería de Software', clave: 'IS', unidadId: 1, activa: true },
-    { id: 4, nombre: 'Ingeniería Industrial', clave: 'II', unidadId: 1, activa: true },
-    { id: 5, nombre: 'Enfermería General', clave: 'ENF', unidadId: 2, activa: true },
+    { id: 4, nombre: 'Ingeniería En Procesos Industriales', clave: 'IPI', unidadId: 1, activa: true },
+    { id: 5, nombre: 'Enfermería General', clave: 'FEM', unidadId: 2, activa: true },
+    { id: 6, nombre: 'Medicina General', clave: 'FMM', unidadId: 3, activa: true },
   ],
   usuarios: [
     { id: 1, nombre: 'Carlos Ramírez López', matricula: '2021110001', tipo: 'alumno', carreraId: 3, email: 'c.ramirez@uas.edu.mx', activo: true },
     { id: 2, nombre: 'María González Soto', matricula: '2020110043', tipo: 'alumno', carreraId: 1, email: 'm.gonzalez@uas.edu.mx', activo: true },
     { id: 3, nombre: 'Dr. José Luis Pérez', matricula: 'P001', tipo: 'profesor', carreraId: 3, email: 'jl.perez@uas.edu.mx', activo: true },
     { id: 4, nombre: 'Ing. Ana Torres Medina', matricula: 'P002', tipo: 'profesor', carreraId: 2, email: 'a.torres@uas.edu.mx', activo: true },
+    { id: 5, nombre: 'Dr. Luis Sanchez', matricula: 'P003', tipo: 'profesor', carreraId: 5, email: 'l.sanchez@uas.edu.mx', activo: true },
+    { id: 6, nombre: 'Sra. Laura Martínez', matricula: 'P004', tipo: 'profesor', carreraId: 4, email: 'l.martinez@uas.edu.mx', activo: true },
+    { id: 7, nombre: 'Hansel Castro Flores', matricula: '23123321', tipo: 'alumno', carreraId: 1, email: 'h.castro@uas.edu.mx', activo: true }
   ],
   equipos: [
     { id: 1, nombre: 'Proyector BenQ MW550', clave: 'PROY-001', categoria: 'Proyección', cantidad: 5, disponibles: 4, estado: 'bueno' },
