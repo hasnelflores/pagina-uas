@@ -4,30 +4,19 @@ const { Pool } = require('pg');
 
 const app = express();
 
-// ======================
-// MIDDLEWARE
-// ======================
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
-// ======================
-// POSTGRES (RAILWAY)
-// ======================
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
 });
 
-// ======================
-// ROOT
-// ======================
 app.get('/', (req, res) => {
     res.send('API SIPE funcionando 🚀');
 });
 
-// ======================
 // USUARIOS
-// ======================
 app.get('/api/usuarios', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM usuarios');
@@ -56,9 +45,7 @@ app.post('/api/usuarios', async (req, res) => {
     }
 });
 
-// ======================
 // EQUIPOS
-// ======================
 app.get('/api/equipos', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM equipos');
@@ -85,9 +72,7 @@ app.post('/api/equipos', async (req, res) => {
     }
 });
 
-// ======================
 // PRESTAMOS
-// ======================
 app.get('/api/prestamos', async (req, res) => {
     try {
         const result = await pool.query(`
@@ -121,13 +106,11 @@ app.post('/api/prestamos', async (req, res) => {
 
         res.json(result.rows[0]);
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: 'Error crear prestamo' });
     }
 });
 
-// ======================
-// SERVER
-// ======================
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {

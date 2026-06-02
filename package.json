@@ -2,10 +2,9 @@
   "name": "prestamos-equipos-uas",
   "version": "1.0.0",
   "description": "Sistema de Préstamo de Equipos - Facultad de Ingeniería Mochis UAS",
-  "main": "src/index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "live-server --port=3000 --open=index.html",
-    "dev": "npx live-server --port=3000"
+    "start": "node server.js"
   },
   "keywords": [
     "prestamos",
@@ -15,9 +14,6 @@
   ],
   "author": "Estudiante UAS",
   "license": "MIT",
-  "devDependencies": {
-    "live-server": "^1.2.2"
-  },
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1",
