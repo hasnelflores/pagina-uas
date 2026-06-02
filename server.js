@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
@@ -9,19 +7,15 @@ const app = express();
 // ======================
 // MIDDLEWARE
 // ======================
-app.use(cors({
-    origin: '*'
-}));
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 // ======================
-// CONEXIÓN POSTGRES
+// POSTGRES (RAILWAY)
 // ======================
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false
-    }
+    ssl: { rejectUnauthorized: false }
 });
 
 // ======================
@@ -38,8 +32,8 @@ app.get('/api/usuarios', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM usuarios');
         res.json(result.rows);
-    } catch (error) {
-        console.log(error);
+    } catch (err) {
+        console.error(err);
         res.status(500).json({ error: 'Error usuarios' });
     }
 });
@@ -50,14 +44,14 @@ app.post('/api/usuarios', async (req, res) => {
 
         const result = await pool.query(
             `INSERT INTO usuarios (nombre, tipo, matricula, carrera)
-             VALUES ($1, $2, $3, $4)
+             VALUES ($1,$2,$3,$4)
              RETURNING *`,
             [nombre, tipo, matricula, carrera]
         );
 
         res.json(result.rows[0]);
-    } catch (error) {
-        console.log(error);
+    } catch (err) {
+        console.error(err);
         res.status(500).json({ error: 'Error crear usuario' });
     }
 });
@@ -69,8 +63,7 @@ app.get('/api/equipos', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM equipos');
         res.json(result.rows);
-    } catch (error) {
-        console.log(error);
+    } catch (err) {
         res.status(500).json({ error: 'Error equipos' });
     }
 });
@@ -81,14 +74,13 @@ app.post('/api/equipos', async (req, res) => {
 
         const result = await pool.query(
             `INSERT INTO equipos (nombre, codigo, disponible)
-             VALUES ($1, $2, $3)
+             VALUES ($1,$2,$3)
              RETURNING *`,
             [nombre, codigo, disponible]
         );
 
         res.json(result.rows[0]);
-    } catch (error) {
-        console.log(error);
+    } catch (err) {
         res.status(500).json({ error: 'Error crear equipo' });
     }
 });
@@ -111,8 +103,7 @@ app.get('/api/prestamos', async (req, res) => {
         `);
 
         res.json(result.rows);
-    } catch (error) {
-        console.log(error);
+    } catch (err) {
         res.status(500).json({ error: 'Error prestamos' });
     }
 });
@@ -123,14 +114,13 @@ app.post('/api/prestamos', async (req, res) => {
 
         const result = await pool.query(
             `INSERT INTO prestamos (usuario_id, equipo_id, fecha_prestamo, estado)
-             VALUES ($1, $2, $3, $4)
+             VALUES ($1,$2,$3,$4)
              RETURNING *`,
             [usuario_id, equipo_id, fecha_prestamo, estado]
         );
 
         res.json(result.rows[0]);
-    } catch (error) {
-        console.log(error);
+    } catch (err) {
         res.status(500).json({ error: 'Error crear prestamo' });
     }
 });
@@ -141,5 +131,5 @@ app.post('/api/prestamos', async (req, res) => {
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
-    console.log(`Servidor listo en puerto ${PORT}`);
+    console.log('Servidor listo en puerto ' + PORT);
 });
