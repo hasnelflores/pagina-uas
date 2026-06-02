@@ -4,19 +4,40 @@ const { Pool } = require('pg');
 
 const app = express();
 
+// ======================
+// MIDDLEWARE
+// ======================
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
+// ======================
+// DEBUG (opcional pero útil)
+// ======================
+console.log("DATABASE_URL existe?", !!process.env.DATABASE_URL);
+
+// ======================
+// POSTGRES
+// ======================
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
 });
 
+// Probar conexión DB sin tumbar servidor
+pool.connect()
+    .then(() => console.log("DB conectada ✔"))
+    .catch(err => console.error("Error DB ❌", err));
+
+// ======================
+// ROOT
+// ======================
 app.get('/', (req, res) => {
     res.send('API SIPE funcionando 🚀');
 });
 
+// ======================
 // USUARIOS
+// ======================
 app.get('/api/usuarios', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM usuarios');
@@ -45,7 +66,9 @@ app.post('/api/usuarios', async (req, res) => {
     }
 });
 
+// ======================
 // EQUIPOS
+// ======================
 app.get('/api/equipos', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM equipos');
@@ -72,7 +95,9 @@ app.post('/api/equipos', async (req, res) => {
     }
 });
 
+// ======================
 // PRESTAMOS
+// ======================
 app.get('/api/prestamos', async (req, res) => {
     try {
         const result = await pool.query(`
@@ -111,8 +136,11 @@ app.post('/api/prestamos', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 3001;
+// ======================
+// SERVER (FIX RAILWAY)
+// ======================
+const PORT = process.env.PORT;
 
-app.listen(PORT, () => {
-    console.log('Servidor listo en puerto ' + PORT);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log('Servidor listo en puerto', PORT);
 });
