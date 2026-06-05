@@ -1,12 +1,14 @@
-function renderDashboard(container) {
-  const s = DB.stats();
-  const prestamos = DB.getAll('prestamos');
-  const usuarios  = DB.getAll('usuarios');
-  const equipos   = DB.getAll('equipos');
+async function renderDashboard(container) {
+  container.innerHTML = `<div style="padding:40px;text-align:center;color:var(--text3)">Cargando dashboard...</div>`;
+  const s = await DB.stats();
+  const prestamos = await DB.getAll('prestamos');
+  const equipos   = await DB.getAll('equipos');
+  const usuarios  = await DB.getAll('usuarios');
 
-  const recientes = [...prestamos].reverse().slice(0, 5).map(p => {
-    const u = DB.getById('usuarios', p.usuarioId);
-    const e = DB.getById('equipos', p.equipoId);
+  const recientes = [...prestamos].reverse().slice(0, 5);
+  const recentHTML = await Promise.all(recientes.map(async p => {
+    const u = await DB.getById('usuarios', p.usuarioId);
+    const e = await DB.getById('equipos', p.equipoId);
     const dotClass = p.estado === 'activo' ? 'green' : p.estado === 'vencido' ? 'red' : '';
     return `
       <div class="activity-item">
@@ -14,14 +16,12 @@ function renderDashboard(container) {
         <div class="activity-info">
           <div class="activity-title">${e ? e.nombre : '—'}</div>
           <div class="activity-meta">${u ? u.nombre : '—'} · ${fmtDate(p.fechaPrestamo)} ·
-            <span class="badge ${p.estado === 'activo' ? 'badge-green' : p.estado === 'vencido' ? 'badge-red' : 'badge-gray'}">
-              ${p.estado}
-            </span>
+            <span class="badge ${p.estado==='activo'?'badge-green':p.estado==='vencido'?'badge-red':'badge-gray'}">${p.estado}</span>
           </div>
         </div>
         <div style="font-size:11px;color:var(--text3);font-weight:600">${p.folio}</div>
       </div>`;
-  }).join('') || '<p style="color:var(--text3);font-size:13px;padding:8px 0">Sin préstamos registrados.</p>';
+  }));
 
   const countByEquipo = {};
   prestamos.forEach(p => { countByEquipo[p.equipoId] = (countByEquipo[p.equipoId] || 0) + 1; });
@@ -47,52 +47,25 @@ function renderDashboard(container) {
         ${new Date().toLocaleDateString('es-MX',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}
       </div>
     </div>
-
     <div class="page-body">
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon">🏛️</div>
-          <div class="stat-value">${s.totalUnidades}</div>
-          <div class="stat-label">Unidades Académicas</div>
-        </div>
-        <div class="stat-card green">
-          <div class="stat-icon">💻</div>
-          <div class="stat-value">${s.totalEquipos}</div>
-          <div class="stat-label">Equipos registrados</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">👥</div>
-          <div class="stat-value">${s.totalUsuarios}</div>
-          <div class="stat-label">Usuarios</div>
-        </div>
-        <div class="stat-card yellow">
-          <div class="stat-icon">📋</div>
-          <div class="stat-value">${s.activos}</div>
-          <div class="stat-label">Préstamos activos</div>
-        </div>
-        <div class="stat-card green">
-          <div class="stat-icon">✅</div>
-          <div class="stat-value">${s.entregados}</div>
-          <div class="stat-label">Entregados</div>
-        </div>
-        <div class="stat-card ${s.vencidos > 0 ? 'red' : ''}">
-          <div class="stat-icon">⚠️</div>
-          <div class="stat-value">${s.vencidos}</div>
-          <div class="stat-label">Vencidos</div>
-        </div>
+        <div class="stat-card"><div class="stat-icon">🏛️</div><div class="stat-value">${s.totalUnidades}</div><div class="stat-label">Unidades Académicas</div></div>
+        <div class="stat-card green"><div class="stat-icon">💻</div><div class="stat-value">${s.totalEquipos}</div><div class="stat-label">Equipos registrados</div></div>
+        <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value">${s.totalUsuarios}</div><div class="stat-label">Usuarios</div></div>
+        <div class="stat-card yellow"><div class="stat-icon">📋</div><div class="stat-value">${s.activos}</div><div class="stat-label">Préstamos activos</div></div>
+        <div class="stat-card green"><div class="stat-icon">✅</div><div class="stat-value">${s.entregados}</div><div class="stat-label">Entregados</div></div>
+        <div class="stat-card ${s.vencidos>0?'red':''}"><div class="stat-icon">⚠️</div><div class="stat-value">${s.vencidos}</div><div class="stat-label">Vencidos</div></div>
       </div>
-
       <div class="dash-grid">
         <div class="dash-card">
           <div class="dash-card-title">📋 Actividad reciente</div>
-          ${recientes}
+          ${recentHTML.join('') || '<p style="color:var(--text3);font-size:13px;padding:8px 0">Sin préstamos registrados.</p>'}
         </div>
         <div class="dash-card">
           <div class="dash-card-title">📊 Equipos más prestados</div>
           ${topRows}
         </div>
       </div>
-
       <div style="margin-top:18px;background:var(--uas-azul);border-radius:8px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;box-shadow:var(--shadow-md)">
         <div>
           <div style="font-family:var(--font-head);font-weight:800;font-size:15px;color:#fff;margin-bottom:3px">Accesos rápidos</div>

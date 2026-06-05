@@ -1,133 +1,125 @@
-// ─── LOCAL DATABASE (localStorage) ────────────────────────────────────────
-const DB_KEY = 'sipe_db';
+// ─── SUPABASE CONFIG ───────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://luutrsnvrsenoiytdpby.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_6JtJD6CYxyKNI8We3DxIog_LpD71r1r';
 
-const defaultData = {
-  unidades: [
-    { id: 1, nombre: 'Facultad de Ingeniería Mochis', siglas: 'FIM', ciudad: 'Los Mochis', activa: true },
-    { id: 2, nombre: 'Facultad de Enfermería Mochis', siglas: 'FEM', ciudad: 'Los Mochis', activa: true },
-    { id: 3, nombre: 'Facultad de Ciencias Económicas', siglas: 'FCE', ciudad: 'Los Mochis', activa: true },
-    { id: 4, nombre: 'Facultad de Medicina', siglas: 'FMM', ciudad: 'Los Mochis', activa: true },
-  ],
-  carreras: [
-    { id: 1, nombre: 'Ingeniería Civil', clave: 'IC', unidadId: 1, activa: true },
-    { id: 2, nombre: 'Ingeniería Geodésica', clave: 'IG', unidadId: 1, activa: true },
-    { id: 3, nombre: 'Ingeniería de Software', clave: 'IS', unidadId: 1, activa: true },
-    { id: 4, nombre: 'Ingeniería En Procesos Industriales', clave: 'IPI', unidadId: 1, activa: true },
-    { id: 5, nombre: 'Enfermería', clave: 'FEM', unidadId: 2, activa: true },
-    { id: 6, nombre: 'Medicina General', clave: 'FMM', unidadId: 3, activa: true },
-  ],
-  usuarios: [
-    { id: 1, nombre: 'Carlos Ramírez López', matricula: '2021110001', tipo: 'alumno', carreraId: 3, email: 'c.ramirez@uas.edu.mx', activo: true },
-    { id: 2, nombre: 'María González Soto', matricula: '2020110043', tipo: 'alumno', carreraId: 1, email: 'm.gonzalez@uas.edu.mx', activo: true },
-    { id: 3, nombre: 'Dr. José Luis Pérez', matricula: 'P001', tipo: 'profesor', carreraId: 3, email: 'jl.perez@uas.edu.mx', activo: true },
-    { id: 4, nombre: 'Ing. Ana Torres Medina', matricula: 'P002', tipo: 'profesor', carreraId: 2, email: 'a.torres@uas.edu.mx', activo: true },
-    { id: 5, nombre: 'Dr. Luis Sanchez', matricula: 'P003', tipo: 'profesor', carreraId: 5, email: 'l.sanchez@uas.edu.mx', activo: true },
-    { id: 6, nombre: 'Sra. Laura Martínez', matricula: 'P004', tipo: 'profesor', carreraId: 4, email: 'l.martinez@uas.edu.mx', activo: true },
-    { id: 7, nombre: 'Hansel Castro Flores', matricula: '23123321', tipo: 'alumno', carreraId: 1, email: 'h.castro@uas.edu.mx', activo: true }
-  ],
-  equipos: [
-    { id: 1, nombre: 'Proyector BenQ MW550', clave: 'PROY-001', categoria: 'Proyección', cantidad: 5, disponibles: 4, estado: 'bueno' },
-    { id: 2, nombre: 'Laptop Dell Inspiron', clave: 'LAP-001', categoria: 'Cómputo', cantidad: 10, disponibles: 8, estado: 'bueno' },
-    { id: 3, nombre: 'Router Inalámbrico TP-Link', clave: 'NET-001', categoria: 'Redes', cantidad: 3, disponibles: 3, estado: 'bueno' },
-    { id: 4, nombre: 'Centro de Cómputo Aula 3', clave: 'CC-003', categoria: 'Aula', cantidad: 1, disponibles: 1, estado: 'bueno' },
-    { id: 5, nombre: 'Cámara Canon EOS', clave: 'CAM-001', categoria: 'Multimedia', cantidad: 2, disponibles: 2, estado: 'regular' },
-  ],
-  prestamos: [
-    {
-      id: 1, folio: 'PRES-0001',
-      usuarioId: 1, equipoId: 2, cantidad: 1,
-      fechaPrestamo: '2025-03-10', horaPrestamo: '09:00',
-      fechaDevolucion: '2025-03-10', horaDevolucion: '13:00',
-      fechaEntrega: '2025-03-10', horaEntrega: '12:45',
-      estado: 'entregado', observaciones: 'Sin novedad'
-    },
-    {
-      id: 2, folio: 'PRES-0002',
-      usuarioId: 3, equipoId: 1, cantidad: 1,
-      fechaPrestamo: '2025-03-11', horaPrestamo: '08:00',
-      fechaDevolucion: '2025-03-11', horaDevolucion: '11:00',
-      fechaEntrega: null, horaEntrega: null,
-      estado: 'activo', observaciones: 'Clase magistral'
-    },
-  ],
-  _nextId: { unidades: 4, carreras: 6, usuarios: 5, equipos: 6, prestamos: 3 }
+const _headers = {
+  'Content-Type': 'application/json',
+  'apikey': SUPABASE_KEY,
+  'Authorization': `Bearer ${SUPABASE_KEY}`,
+  'Prefer': 'return=representation'
 };
 
 // ─── DB API ────────────────────────────────────────────────────────────────
 const DB = {
-  _data: null,
 
-  load() {
-    try {
-      const raw = localStorage.getItem(DB_KEY);
-      this._data = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(defaultData));
-    } catch {
-      this._data = JSON.parse(JSON.stringify(defaultData));
-    }
-    return this;
+  async getAll(table) {
+    const map = { unidades:'unidades', carreras:'carreras', usuarios:'usuarios', equipos:'equipos', prestamos:'prestamos' };
+    const t = map[table];
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${t}?order=id.asc`, { headers: _headers });
+    const data = await res.json();
+    return (data || []).map(r => this._toCamel(table, r));
   },
 
-  save() {
-    localStorage.setItem(DB_KEY, JSON.stringify(this._data));
-    return this;
+  async getById(table, id) {
+    const map = { unidades:'unidades', carreras:'carreras', usuarios:'usuarios', equipos:'equipos', prestamos:'prestamos' };
+    const t = map[table];
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${t}?id=eq.${id}`, { headers: _headers });
+    const data = await res.json();
+    return data && data[0] ? this._toCamel(table, data[0]) : null;
   },
 
-  reset() {
-    this._data = JSON.parse(JSON.stringify(defaultData));
-    this.save();
+  async insert(table, record) {
+    const map = { unidades:'unidades', carreras:'carreras', usuarios:'usuarios', equipos:'equipos', prestamos:'prestamos' };
+    const t = map[table];
+    const body = this._toSnake(table, record);
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${t}`, {
+      method: 'POST', headers: _headers, body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    return data && data[0] ? this._toCamel(table, data[0]) : null;
   },
 
-  // ── Generic CRUD ────────────────────────────────
-  getAll(table) {
-    return [...(this._data[table] || [])];
+  async update(table, id, changes) {
+    const map = { unidades:'unidades', carreras:'carreras', usuarios:'usuarios', equipos:'equipos', prestamos:'prestamos' };
+    const t = map[table];
+    const body = this._toSnake(table, changes);
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${t}?id=eq.${id}`, {
+      method: 'PATCH', headers: _headers, body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    return data && data[0] ? this._toCamel(table, data[0]) : null;
   },
 
-  getById(table, id) {
-    return (this._data[table] || []).find(r => r.id === id) || null;
-  },
-
-  insert(table, record) {
-    const id = this._data._nextId[table]++;
-    const newRecord = { ...record, id };
-    this._data[table].push(newRecord);
-    this.save();
-    return newRecord;
-  },
-
-  update(table, id, changes) {
-    const idx = this._data[table].findIndex(r => r.id === id);
-    if (idx < 0) return null;
-    this._data[table][idx] = { ...this._data[table][idx], ...changes };
-    this.save();
-    return this._data[table][idx];
-  },
-
-  delete(table, id) {
-    const idx = this._data[table].findIndex(r => r.id === id);
-    if (idx < 0) return false;
-    this._data[table].splice(idx, 1);
-    this.save();
+  async delete(table, id) {
+    const map = { unidades:'unidades', carreras:'carreras', usuarios:'usuarios', equipos:'equipos', prestamos:'prestamos' };
+    const t = map[table];
+    await fetch(`${SUPABASE_URL}/rest/v1/${t}?id=eq.${id}`, {
+      method: 'DELETE', headers: _headers
+    });
     return true;
   },
 
-  // ── Helpers ─────────────────────────────────────
-  nextFolio() {
-    const n = this._data._nextId.prestamos;
+  async stats() {
+    const [unidades, usuarios, equipos, prestamos] = await Promise.all([
+      this.getAll('unidades'), this.getAll('usuarios'),
+      this.getAll('equipos'), this.getAll('prestamos')
+    ]);
+    return {
+      totalUnidades:  unidades.length,
+      totalUsuarios:  usuarios.length,
+      totalEquipos:   equipos.length,
+      totalPrestamos: prestamos.length,
+      activos:    prestamos.filter(p => p.estado === 'activo').length,
+      entregados: prestamos.filter(p => p.estado === 'entregado').length,
+      vencidos:   prestamos.filter(p => p.estado === 'vencido').length,
+    };
+  },
+
+  async nextFolio() {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/prestamos?select=id&order=id.desc&limit=1`, { headers: _headers });
+    const data = await res.json();
+    const n = data && data[0] ? data[0].id + 1 : 1;
     return 'PRES-' + String(n).padStart(4, '0');
   },
 
-  stats() {
-    const prestamos = this._data.prestamos;
-    return {
-      totalUnidades: this._data.unidades.length,
-      totalUsuarios: this._data.usuarios.length,
-      totalEquipos:  this._data.equipos.length,
-      totalPrestamos: prestamos.length,
-      activos: prestamos.filter(p => p.estado === 'activo').length,
-      entregados: prestamos.filter(p => p.estado === 'entregado').length,
-      vencidos: prestamos.filter(p => p.estado === 'vencido').length,
+  // ── Mapeo snake_case ↔ camelCase ────────────────
+  _toCamel(table, r) {
+    if (!r) return r;
+    const maps = {
+      carreras:  { unidad_id: 'unidadId' },
+      usuarios:  { carrera_id: 'carreraId' },
+      prestamos: {
+        usuario_id: 'usuarioId', equipo_id: 'equipoId',
+        fecha_prestamo: 'fechaPrestamo', hora_prestamo: 'horaPrestamo',
+        fecha_devolucion: 'fechaDevolucion', hora_devolucion: 'horaDevolucion',
+        fecha_entrega: 'fechaEntrega', hora_entrega: 'horaEntrega',
+      }
     };
+    const m = maps[table] || {};
+    const out = {};
+    for (const [k, v] of Object.entries(r)) {
+      out[m[k] || k] = v;
+    }
+    return out;
+  },
+
+  _toSnake(table, r) {
+    if (!r) return r;
+    const maps = {
+      carreras:  { unidadId: 'unidad_id' },
+      usuarios:  { carreraId: 'carrera_id' },
+      prestamos: {
+        usuarioId: 'usuario_id', equipoId: 'equipo_id',
+        fechaPrestamo: 'fecha_prestamo', horaPrestamo: 'hora_prestamo',
+        fechaDevolucion: 'fecha_devolucion', horaDevolucion: 'hora_devolucion',
+        fechaEntrega: 'fecha_entrega', horaEntrega: 'hora_entrega',
+      }
+    };
+    const m = maps[table] || {};
+    const out = {};
+    for (const [k, v] of Object.entries(r)) {
+      out[m[k] || k] = v;
+    }
+    return out;
   }
 };
-
-DB.load();
